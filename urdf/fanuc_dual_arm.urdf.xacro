@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<robot name="dual_arm_robot" xmlns:xacro="http://wiki.ros.org/xacro">
+
+  <!-- Include the arm macro from single arm file -->
+  <xacro:include filename="$(find dual_arm_description)/urdf/fanuc_single_arm.urdf.xacro"/>
+
+  <!-- ================= ROS2_CONTROL ================= -->
+  <ros2_control name="DualArmSystem" type="system">
+    <hardware>
+      <plugin>mock_components/GenericSystem</plugin>
+    </hardware>
+    
+    <!-- Left arm joints -->
+    <joint name="left_joint_1">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="left_joint_2">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="left_joint_3">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    
+    <!-- Right arm joints -->
+    <joint name="right_joint_1">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="right_joint_2">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+    <joint name="right_joint_3">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
+  <!-- ================= WORLD ================= -->
+  <link name="world"/>
+
+  <!-- ================= BASE PLATE ================= -->
+  <link name="base_plate">
+    <visual>
+      <geometry>
+        <box size="1.0 0.5 0.05"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0.1 0.1 0.1 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="world_to_plate" type="fixed">
+    <parent link="world"/>
+    <child link="base_plate"/>
+    <origin xyz="0 0 0.025"/>
+  </joint>
+
+  <!-- ================= PILLAR ================= -->
+  <link name="pillar">
+    <visual>
+      <geometry>
+        <cylinder radius="0.05" length="0.6"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.7 0.7 0.7 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="plate_to_pillar" type="fixed">
+    <parent link="base_plate"/>
+    <child link="pillar"/>
+    <origin xyz="0 0 0.325"/>
+  </joint>
+
+  <!-- ================= LEFT ARM ================= -->
+  <link name="left_mount_point"/>
+  
+  <joint name="pillar_to_left_mount" type="fixed">
+    <parent link="pillar"/>
+    <child link="left_mount_point"/>
+    <origin xyz="0 0.15 0.3" rpy="0 0.785398 0"/>
+  </joint>
+
+  <xacro:simple_kuka_arm prefix="left_" parent_link="left_mount_point"/>
+
+  <!-- ================= RIGHT ARM ================= -->
+  <link name="right_mount_point"/>
+  
+  <joint name="pillar_to_right_mount" type="fixed">
+    <parent link="pillar"/>
+    <child link="right_mount_point"/>
+    <origin xyz="0 -0.15 0.3" rpy="0 -0.785398 0"/>
+  </joint>
+
+  <xacro:simple_kuka_arm prefix="right_" parent_link="right_mount_point"/>
+
+</robot>

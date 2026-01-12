@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+
+  <xacro:macro name="simple_kuka_arm" params="prefix parent_link">
+
+    <!-- BASE -->
+    <link name="${prefix}base_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://dual_arm_description/meshes/visual/base_link.dae"/>
+        </geometry>
+      </visual>
+    </link>
+
+    <joint name="${prefix}base_fixed" type="fixed">
+      <parent link="${parent_link}"/>
+      <child link="${prefix}base_link"/>
+      <origin xyz="0 0 0"/>
+    </joint>
+
+    <!-- LINK 1 -->
+    <link name="${prefix}link_1">
+      <visual>
+        <geometry>
+          <mesh filename="package://dual_arm_description/meshes/visual/link_1.dae"/>
+        </geometry>
+      </visual>
+    </link>
+
+    <joint name="${prefix}joint_1" type="revolute">
+      <parent link="${prefix}base_link"/>
+      <child link="${prefix}link_1"/>
+      <origin xyz="0 0 0.1"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-1.57" upper="1.57" effort="100" velocity="1"/>
+    </joint>
+
+    <!-- Transmission for joint_1 -->
+    <transmission name="${prefix}joint_1_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}joint_1">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}joint_1_motor">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+    <!-- LINK 2 -->
+    <link name="${prefix}link_2">
+      <visual>
+        <geometry>
+          <mesh filename="package://dual_arm_description/meshes/visual/link_2.dae"/>
+        </geometry>
+      </visual>
+    </link>
+
+    <joint name="${prefix}joint_2" type="revolute">
+      <parent link="${prefix}link_1"/>
+      <child link="${prefix}link_2"/>
+      <origin xyz="0 0 0.1"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-1.57" upper="1.57" effort="100" velocity="1"/>
+    </joint>
+
+    <!-- Transmission for joint_2 -->
+    <transmission name="${prefix}joint_2_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}joint_2">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}joint_2_motor">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+    <!-- LINK 3 -->
+    <link name="${prefix}link_3">
+      <visual>
+        <geometry>
+          <mesh filename="package://dual_arm_description/meshes/visual/link_3.dae"/>
+        </geometry>
+      </visual>
+    </link>
+
+    <joint name="${prefix}joint_3" type="revolute">
+      <parent link="${prefix}link_2"/>
+      <child link="${prefix}link_3"/>
+      <origin xyz="0 0 0.1"/>
+      <axis xyz="0 1 0"/>
+      <limit lower="-1.57" upper="1.57" effort="100" velocity="1"/>
+    </joint>
+
+    <!-- Transmission for joint_3 -->
+    <transmission name="${prefix}joint_3_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="${prefix}joint_3">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="${prefix}joint_3_motor">
+        <hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+    <!-- TOOL -->
+    <link name="${prefix}tool0"/>
+
+    <joint name="${prefix}tool_fixed" type="fixed">
+      <parent link="${prefix}link_2"/>
+      <child link="${prefix}tool0"/>
+      <origin xyz="0 0 0.25"/>
+    </joint>
+
+  </xacro:macro>
+
+</robot>
